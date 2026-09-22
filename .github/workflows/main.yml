@@ -1,18 +1,27 @@
-name: my first ci
-
-on: push          # 意思是：每次有人推送代码就触发
-
+name: my first ci and cd
+on: push
 jobs:
   test:
-    runs-on: ubuntu-latest   # 让 GitHub 提供一台干净的 Linux 机器
+    runs-on: ubuntu-latest
     steps:
-      - name: 拉代码
+      - name: 1. 拉代码
         uses: actions/checkout@v4
-
-      - name: 装 Python
+      - name: 2. 装 Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
-      - name: 跑测试
+      - name: 3. 跑测试
         run: python app.py
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: 4. 远程部署到服务器
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            echo "成功登录服务器！"
+            echo "这里可以写 git pull 和重启服务的命令"
