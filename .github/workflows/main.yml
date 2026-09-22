@@ -1,0 +1,18 @@
+name: my first ci
+
+on: push          # 意思是：每次有人推送代码就触发
+
+jobs:
+  test:
+    runs-on: ubuntu-latest   # 让 GitHub 提供一台干净的 Linux 机器
+    steps:
+      - name: 拉代码
+        uses: actions/checkout@v4
+
+      - name: 装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 跑测试
+        run: python app.py
